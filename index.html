@@ -51,6 +51,7 @@
                     <option value="DPCC">DPCC</option>
                     <option value="Edu. Física">Edu. Física</option>
                     <option value="EPT">EPT</option>
+                    <option value="Historia">Historia</option>
                     <option value="Inglés">Inglés</option>
                     <option value="Matemática">Matemática</option>
                     <option value="Religión">Religión</option>
@@ -79,6 +80,7 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Fecha</th>
+                    <th>Hora</th>
                     <th>Curso</th>
                     <th>Tema</th>
                     <th>Estado</th>
@@ -97,12 +99,12 @@
             const subject = document.getElementById('subject').value;
             const title = document.getElementById('title').value;
             const status = document.getElementById('status').value;
-            const timestamp = new Date().getTime();
-            const expirationTime = timestamp + (12 * 60 * 60 * 1000); // 12 horas
+            const time = new Date().toLocaleTimeString("es-ES");
+            const expirationTime = new Date().getTime() + (12 * 60 * 60 * 1000); 
 
             if (name && date && subject && title && status) {
                 let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
-                attendanceData.push({ name, date, subject, title, status, expirationTime });
+                attendanceData.push({ name, date, time, subject, title, status, expirationTime });
                 localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
                 updateTable();
             } else {
@@ -119,15 +121,16 @@
             attendanceData = attendanceData.filter(item => item.expirationTime > now);
             localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
 
-            attendanceData.forEach(({ name, date, subject, title, status }) => {
+            attendanceData.forEach(({ name, date, time, subject, title, status }) => {
                 const row = table.insertRow();
-                row.innerHTML = `<td>${name}</td><td>${date}</td><td>${subject}</td><td>${title}</td><td>${status}</td>`;
+                row.innerHTML = `<td>${name}</td><td>${date}</td><td>${time}</td><td>${subject}</td><td>${title}</td><td>${status}</td>`;
             });
         }
 
         function exportToExcel() {
             let table = document.querySelector("table");
             let workbook = XLSX.utils.table_to_book(table, { sheet: "Asistencia" });
+
             XLSX.writeFile(workbook, "Asistencia.xlsx");
         }
 
