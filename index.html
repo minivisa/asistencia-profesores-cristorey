@@ -8,20 +8,68 @@
     <style>
         body { font-family: Arial, sans-serif; background-color: #ffffff; color: #333; text-align: center; padding: 20px; }
         .container { max-width: 900px; margin: auto; padding: 20px; background-color: #f2f2f2; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); }
+        .title-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .title-section h1 { margin: 0; flex-grow: 1; text-align: center; color: #27548A; }
+        .title-section a img { width: 150px; height: auto; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { font-weight: bold; color: #27548A; display: block; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #27548A; border-radius: 5px; }
         table { width: 100%; margin-top: 20px; border-collapse: collapse; }
         th, td { border: 1px solid #27548A; padding: 8px; text-align: left; }
         th { background-color: #27548A; color: white; }
         button { padding: 10px; border: none; background-color: #27548A; color: white; cursor: pointer; border-radius: 5px; }
+        button:hover { background-color: #1E3A5F; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Asistencia de Profesores</h1>
+        <div class="title-section">
+            <a href="https://cristoreymaristas.sieweb.com.pe/sistema/login">
+                <img src="https://cristoreycajamarca.edu.pe/wp-content/uploads/2024/03/cropped-Cristo-Rey-2022-Vert-icon-2048x848.png" alt="Cristo Rey Maristas">
+            </a>
+            <h1>Asistencia de Profesores</h1>
+            <div class="school-name">Cristo Rey Maristas, Cajamarca</div>
+        </div>
+
         <form id="attendance-form">
-            <input type="text" id="name" placeholder="Nombre del Profesor" required>
-            <input type="date" id="date" required>
-            <input type="text" id="subject" placeholder="Curso" required>
+            <div class="form-group">
+                <label for="name">Nombre del Profesor:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Fecha:</label>
+                <input type="date" id="date" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Curso:</label>
+                <select id="subject" required>
+                    <option value="Arte">Arte</option>
+                    <option value="CCSS">CCSS</option>
+                    <option value="Ciencia y Tecnología">Ciencia y Tecnología</option>
+                    <option value="Comunicación">Comunicación</option>
+                    <option value="DPCC">DPCC</option>
+                    <option value="Edu. Física">Edu. Física</option>
+                    <option value="EPT">EPT</option>
+                    <option value="Inglés">Inglés</option>
+                    <option value="Matemática">Matemática</option>
+                    <option value="Religión">Religión</option>
+                    <option value="T.D.I">T.D.I</option>
+                    <option value="Tutoría">Tutoría</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="title">Título/Tema de la Clase:</label>
+                <input type="text" id="title" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Estado de Asistencia:</label>
+                <select id="status" required>
+                    <option value="Presente">Presente</option>
+                    <option value="Ausente">Ausente</option>
+                    <option value="Permiso">Permiso</option>
+                </select>
+            </div>
             <button type="button" onclick="markAttendance()">Marcar Asistencia</button>
         </form>
 
@@ -32,6 +80,8 @@
                     <th>Nombre</th>
                     <th>Fecha</th>
                     <th>Curso</th>
+                    <th>Tema</th>
+                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody id="attendance-list"></tbody>
@@ -45,12 +95,14 @@
             const name = document.getElementById('name').value;
             const date = document.getElementById('date').value;
             const subject = document.getElementById('subject').value;
+            const title = document.getElementById('title').value;
+            const status = document.getElementById('status').value;
             const timestamp = new Date().getTime();
             const expirationTime = timestamp + (12 * 60 * 60 * 1000); // 12 horas
 
-            if (name && date && subject) {
+            if (name && date && subject && title && status) {
                 let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
-                attendanceData.push({ name, date, subject, expirationTime });
+                attendanceData.push({ name, date, subject, title, status, expirationTime });
                 localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
                 updateTable();
             } else {
@@ -67,9 +119,9 @@
             attendanceData = attendanceData.filter(item => item.expirationTime > now);
             localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
 
-            attendanceData.forEach(({ name, date, subject }) => {
+            attendanceData.forEach(({ name, date, subject, title, status }) => {
                 const row = table.insertRow();
-                row.innerHTML = `<td>${name}</td><td>${date}</td><td>${subject}</td>`;
+                row.innerHTML = `<td>${name}</td><td>${date}</td><td>${subject}</td><td>${title}</td><td>${status}</td>`;
             });
         }
 
